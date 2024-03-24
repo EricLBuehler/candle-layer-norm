@@ -15,7 +15,7 @@ constexpr uint32_t THREADS_PER_WARP = 32;
 
 inline void check_cuda_(cudaError_t status, const char *file, int line) {
     if( status != cudaSuccess ) {
-        fprintf(stderr, "CUDA Error: %s %s %d\n", cudaGetErrorString(status), file, line);
+        // fprintf(stderr, "CUDA Error: %s %s %d\n", cudaGetErrorString(status), file, line);
         exit(status);
     }
 }
