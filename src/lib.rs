@@ -65,7 +65,7 @@ impl LayerNorm {
         let cols = x_l.dims()[1];
 
         if !(cols % 8 == 0 && cols <= 8192) {
-            candle_core::bail!("hidden size must be % 8 and <= 8192")
+            candle_core::bail!("hidden size must be % 8 and <= 8192, it is {cols}")
         }
 
         let x_stride = x_l.stride();
