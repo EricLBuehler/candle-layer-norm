@@ -1,6 +1,5 @@
 #include "ln.h"
 #include "ln_fwd_kernels.cuh"
-#include <iostream>
 
 /*
 Ada
