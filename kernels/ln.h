@@ -6,8 +6,6 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
 
 
 //#ifdef OLD_GENERATOR_PATH
