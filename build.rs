@@ -51,7 +51,11 @@ fn main() -> Result<()> {
 
     let compute_cap = compute_cap()?;
 
-    let out_file = build_dir.join("liblayernorm.a");
+    let out_file = if cfg!(target_os = "windows") {
+        build_dir.join("liblayernorm.lib")
+    } else {
+        build_dir.join("liblayernorm.a")
+    };
 
     let kernel_dir = PathBuf::from("kernels");
     let cu_files: Vec<_> = KERNEL_FILES
