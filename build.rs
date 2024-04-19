@@ -52,7 +52,7 @@ fn main() -> Result<()> {
     let compute_cap = compute_cap()?;
 
     let out_file = if cfg!(target_os = "windows") {
-        build_dir.join("liblayernorm.lib")
+        build_dir.join("layernorm.lib")
     } else {
         build_dir.join("liblayernorm.a")
     };
