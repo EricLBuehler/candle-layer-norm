@@ -3,6 +3,7 @@
 // variable in order to cache the compiled artifacts and avoid recompiling too often.
 use anyhow::{Context, Result};
 use rayon::prelude::*;
+use std::env;
 use std::path::PathBuf;
 use std::str::FromStr;
 
