@@ -31,7 +31,8 @@ fn round_multiple(x: usize, m: usize) -> usize {
 
 impl LayerNorm {
     fn fwd<
-        T: candle_core::cuda_backend::CudaDType + candle_core::cuda_backend::cudarc::driver::DeviceRepr,
+        T: candle_core::cuda_backend::CudaDType
+            + candle_core::cuda_backend::cudarc::driver::DeviceRepr,
     >(
         &self,
         x: &candle_core::CudaStorage,
@@ -65,7 +66,10 @@ impl LayerNorm {
         let cols = x_l.dims()[1];
 
         if !(cols % 8 == 0 && cols <= 8192) {
-            candle_core::bail!("hidden size must be % 8 and <= 8192, it is {:?}", x_l.shape())
+            candle_core::bail!(
+                "hidden size must be % 8 and <= 8192, it is {:?}",
+                x_l.shape()
+            )
         }
 
         let x_stride = x_l.stride();
@@ -218,7 +222,9 @@ impl candle_core::CustomOp1 for LayerNorm {
             DType::BF16 => self.fwd::<bf16>(x, x_l, None, None),
             DType::F32 => self.fwd::<f32>(x, x_l, None, None),
             dt => {
-                candle_core::bail!("fused-layer-norm is only supported for f32, f16 and bf16 ({dt:?})")
+                candle_core::bail!(
+                    "fused-layer-norm is only supported for f32, f16 and bf16 ({dt:?})"
+                )
             }
         }
     }
@@ -251,7 +257,9 @@ impl candle_core::CustomOp2 for LayerNorm {
             DType::BF16 => self.fwd::<bf16>(x, x_l, Some(r), Some(r_l)),
             DType::F32 => self.fwd::<f32>(x, x_l, Some(r), Some(r_l)),
             dt => {
-                candle_core::bail!("fused-layer-norm is only supported for f32, f16 and bf16 ({dt:?})")
+                candle_core::bail!(
+                    "fused-layer-norm is only supported for f32, f16 and bf16 ({dt:?})"
+                )
             }
         }
     }

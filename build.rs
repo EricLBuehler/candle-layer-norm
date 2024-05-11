@@ -47,8 +47,8 @@ fn main() -> Result<()> {
     };
     set_cuda_include_dir()?;
 
-    let ccbin_env = std::env::var("CANDLE_NVCC_CCBIN");
-    println!("cargo:rerun-if-env-changed=CANDLE_NVCC_CCBIN");
+    let ccbin_env = std::env::var("NVCC_CCBIN");
+    println!("cargo:rerun-if-env-changed=NVCC_CCBIN");
 
     let compute_cap = compute_cap()?;
 
@@ -89,6 +89,11 @@ fn main() -> Result<()> {
             .par_iter()
             .map(|(cu_file, obj_file)| {
                 let mut command = std::process::Command::new("nvcc");
+                let cuda_nvcc_flags_env = std::env::var("CUDA_NVCC_FLAGS");
+                if let Ok(cuda_nvcc_flags_env) = &cuda_nvcc_flags_env {
+                    command
+                        .args(["--compiler-options", cuda_nvcc_flags_env]);
+                }
                 command
                     .arg("-std=c++17")
                     .arg("-O3")
@@ -153,10 +158,7 @@ fn main() -> Result<()> {
     let target = env::var("TARGET").unwrap();
     if target.contains("msvc") {
         // nothing to link to
-    } else if target.contains("apple")
-        || target.contains("freebsd")
-        || target.contains("openbsd")
-    {
+    } else if target.contains("apple") || target.contains("freebsd") || target.contains("openbsd") {
         println!("cargo:rustc-link-lib=dylib=c++");
     } else if target.contains("android") {
         println!("cargo:rustc-link-lib=dylib=c++_shared");
