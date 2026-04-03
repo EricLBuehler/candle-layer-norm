@@ -101,10 +101,19 @@ fn main() -> Result<()> {
                     .arg("--expt-extended-lambda")
                     .arg("--use_fast_math")
                     .arg("--verbose");
+                if cfg!(windows) {
+                    command.arg("-Xcompiler").arg("/bigobj");
+                }
                 if let Ok(ccbin_path) = &ccbin_env {
                     command
                         .arg("-allow-unsupported-compiler")
                         .args(["-ccbin", ccbin_path]);
+                }
+                // Add /bigobj flag for MSVC on Windows to handle large object files
+                // This fixes error C1128: number of sections exceeded object file format limit
+                #[cfg(target_os = "windows")]
+                {
+                    command.args(["-Xcompiler", "/bigobj"]);
                 }
                 command.arg(cu_file);
                 let output = command
@@ -144,7 +153,10 @@ fn main() -> Result<()> {
     println!("cargo:rustc-link-search={}", build_dir.display());
     println!("cargo:rustc-link-lib=layernorm");
     println!("cargo:rustc-link-lib=dylib=cudart");
-    println!("cargo:rustc-link-lib=dylib=stdc++");
+    let target_env = std::env::var("CARGO_CFG_TARGET_ENV").ok();
+    if target_env.as_deref() != Some("msvc") {
+        println!("cargo:rustc-link-lib=dylib=stdc++");
+    }
 
     Ok(())
 }

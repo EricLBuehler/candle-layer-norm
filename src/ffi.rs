@@ -1,6 +1,6 @@
 use core::ffi::{c_int, c_void};
 
-extern "C" {
+unsafe extern "C" {
     pub(crate) fn run_ln(
         x: *const c_void,
         residual: *const c_void,
